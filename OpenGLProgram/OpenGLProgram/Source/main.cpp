@@ -1,39 +1,19 @@
-#include <gl_core_4_4.h>
-#include <glfw3.h>
-#include <iostream>
+#include <Application.h>
 
 int main()
 {
-	//initialise glfw services
-	if (!glfwInit()) return -1;
-
-	//set up the window
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "Computer Graphics", nullptr, nullptr);
-	if (window == nullptr)
+	Application* theApp = new Application();
+	if (theApp->Initialise())
 	{
-		glfwTerminate();
-		return -2;
+		//gameloop
+		while (theApp->Update())
+		{
+			theApp->Draw();
+		}
+		theApp->Shutdown();
 	}
 
-	glfwMakeContextCurrent(window);
-
-	//load the correct openGL functions for the rendering
-	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return -3;
-	}
 	//--------------------------
-	//test what version of openGL is being used
-	auto major = ogl_GetMajorVersion();
-	auto minor = ogl_GetMinorVersion();
-	printf("GL: %i.%i\n", major, minor);
-
-
-	//--------------------------
-	//destory the window and terminate glfw services
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	delete theApp;
 	return 0;
 }
